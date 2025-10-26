@@ -22,7 +22,6 @@ public class Speciality {
     @Column(name = "speciality_id")
     private Integer specialityId;
 
-    @Size(min = 10, max = 80)
     @Column(name = "speciality_name", nullable = false, unique = true)
     private String name;
 

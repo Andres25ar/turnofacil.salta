@@ -9,7 +9,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 @Repository
-public interface AppointmentRepository extends JpaRepository<Appointment, BigInteger> {
+public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
 
     // Nota: Usamos BigInteger porque así lo definiste en tu entidad Appointment.
 

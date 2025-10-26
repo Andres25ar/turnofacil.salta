@@ -29,11 +29,9 @@ public class HealthCenter {
     @Column(name = "center_id")
     private Long centerId;
 
-    @Size(min = 6, max = 100)
     @Column(name = "center_name", nullable = false, unique = true)
     private String centerName;
 
-    @Size(min = 6, max = 100)
     @Column(name = "center_address", nullable = false, unique = true)
     private String centerAddress;
 

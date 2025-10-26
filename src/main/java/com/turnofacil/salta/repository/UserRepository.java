@@ -24,5 +24,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Boolean existsByCuil(String cuil);
 
     // Comprueba si ya existe un usuario con ese dni
-    Boolean existsByDni(String dni);
+    Boolean existsByDni(Long dni);
 }

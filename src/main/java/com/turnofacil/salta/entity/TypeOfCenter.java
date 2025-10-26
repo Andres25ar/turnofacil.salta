@@ -20,7 +20,6 @@ public class TypeOfCenter {
     @Column(name = "id")
     private Integer id;
 
-    @Size(min = 5, max = 40)
     @Column(name = "type", nullable = false)
     private String type;
 
