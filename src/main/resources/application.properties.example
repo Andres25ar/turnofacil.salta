@@ -1,16 +1,16 @@
 spring.application.name=turno.facil.salta
 
-# Configuraci髇 del puerto del servidor
+# Configuraci贸n del puerto del servidor
 server.port=8080
 
-# Configuraci髇 de la conexi髇 a la base de datos PostgreSQL
+# Configuraci贸n de la conexi贸n a la base de datos PostgreSQL
 spring.datasource.url=jdbc:postgresql://localhost:5432/tu_base_de_datos
 spring.datasource.username=tu_usuario
-spring.datasource.password=tu_contrase馻
+spring.datasource.password=tu_contrase帽a
 spring.datasource.driver-class-name=org.postgresql.Driver
 
-# Configuraci髇 de JPA e Hibernate
+# Configuraci贸n de JPA e Hibernate
 # spring.jpa.show-sql=true  # Descomentar para ver las consultas SQL en la consola
 spring.jpa.hibernate.ddl-auto=update # 'update' actualiza el esquema al iniciar, 'validate' lo valida, 'create' lo borra y crea de nuevo. Usar con cuidado.
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
-spring.jpa.properties.hibernate.format_sql=true # Formatea el SQL en la consola para que sea m醩 legible
+spring.jpa.properties.hibernate.format_sql=true # Formatea el SQL en la consola para que sea m谩s legible
