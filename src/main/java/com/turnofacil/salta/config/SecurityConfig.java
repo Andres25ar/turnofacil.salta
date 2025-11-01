@@ -72,6 +72,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/health-centers/**").permitAll()
                         //permisos para crear una especialidad
                         .requestMatchers("/api/v1/specialities/**").permitAll()
+                        //permisos para crear una disponibilidad horaria
+                        .requestMatchers("/api/v1/schedules/**").permitAll()
                         // Cualquier otra ruta (que no tengamos aún) requerirá autenticación
                         .anyRequest().authenticated()
                 );
