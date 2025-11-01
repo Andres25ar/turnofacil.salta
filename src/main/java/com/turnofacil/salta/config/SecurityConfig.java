@@ -70,6 +70,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         // ¡TAMBIÉN AÑADIMOS ESTO PARA SEGUIR PROBANDO EL CRUD!
                         .requestMatchers("/api/v1/health-centers/**").permitAll()
+                        //permisos para crear una especialidad
+                        .requestMatchers("/api/v1/specialities/**").permitAll()
                         // Cualquier otra ruta (que no tengamos aún) requerirá autenticación
                         .anyRequest().authenticated()
                 );

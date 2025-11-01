@@ -10,5 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SpecialityResponseDTO {
-
+    private Integer specialityId;
+    private String name;
+    private String description;
 }

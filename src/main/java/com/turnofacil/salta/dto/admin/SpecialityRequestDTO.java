@@ -16,5 +16,6 @@ public class SpecialityRequestDTO {
     @Size(min = 5, max = 100, message = "Asegurate de tener entre 5 un 100 caracteres")
     private String name;
 
+    //la descripcion no suele ser obligatoria
     private String description;
 }
