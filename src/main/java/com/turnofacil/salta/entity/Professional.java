@@ -31,7 +31,7 @@ public class Professional {
     private String licence;
 
     //relacio uno a uno con usuario que puede no existir, ya que no todo usuario es un profesional
-    @OneToOne(mappedBy = "professional", optional = true)
+    @OneToOne(mappedBy = "professional", optional = true, fetch = FetchType.LAZY)
     private User user;
 
     @OneToMany(mappedBy = "professional")
@@ -45,14 +45,14 @@ public class Professional {
     private LocalDateTime createdDate;
 
     @CreatedBy
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.LAZY)
     private User createdBy;
 
     @LastModifiedDate
     private LocalDateTime updatedDate;
 
     @LastModifiedBy
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.LAZY)
     private User updatedBy;
 
     //otros metodos

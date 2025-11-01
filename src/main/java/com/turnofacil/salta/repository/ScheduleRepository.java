@@ -6,6 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
-    // Por ahora, los métodos CRUD básicos son suficientes.
-    // Más adelante podríamos añadir consultas por rangos de horas, etc.
+    // mas adelante añadir consultas por rangos de horas, etc.
 }

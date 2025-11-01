@@ -11,11 +11,9 @@ import java.util.List;
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
 
-    // Nota: Usamos BigInteger porque así lo definiste en tu entidad Appointment.
-
-    // Para buscar todos los turnos de un paciente
+    // buscar todos los turnos de un paciente
     List<Appointment> findByUser(User user);
 
-    // Más adelante añadiremos búsquedas por fecha y profesional
+    // mas adelante añadir búsquedas por fecha y profesional
 }
 

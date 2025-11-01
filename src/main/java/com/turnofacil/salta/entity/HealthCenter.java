@@ -42,7 +42,7 @@ public class HealthCenter {
     private BigDecimal longitude;
 
     @Column(name = "postal_code", nullable = false)
-    private String cp;
+    private String postalCode;
 
     @Column(name = "phone", nullable = false)
     private String phone;
@@ -62,14 +62,14 @@ public class HealthCenter {
     private LocalDateTime createdDate;
 
     @CreatedBy
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User createdBy;
 
     @LastModifiedDate
     private LocalDateTime updatedDate;
 
     @LastModifiedBy
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User updatedBy;
 
     //otros metodos

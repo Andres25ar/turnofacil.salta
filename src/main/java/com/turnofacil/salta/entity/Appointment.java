@@ -53,14 +53,14 @@ public class Appointment {
     private LocalDateTime createdDate;
 
     @CreatedBy
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.LAZY)
     private User createdBy;
 
     @LastModifiedDate
     private LocalDateTime updatedDate;
 
     @LastModifiedBy
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.LAZY)
     private User updatedBy;
 
     //otros metodo

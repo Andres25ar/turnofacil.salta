@@ -9,6 +9,6 @@ import java.util.Optional;
 @Repository
 public interface TypeOfCenterRepository extends JpaRepository<TypeOfCenter, Integer> {
 
-    // Para buscar un tipo por su nombre
+    // buscar un tipo de centro por su nombre
     Optional<TypeOfCenter> findByType(String type);
 }

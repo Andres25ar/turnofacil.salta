@@ -12,14 +12,14 @@ import java.util.List;
 @Repository
 public interface SpecialityDetailRepository extends JpaRepository<SpecialityDetail, Long> {
 
-    // Métodos de búsqueda combinados que serán muy útiles
+    // busquedas combinadas que serán muy útiles
 
-    // Buscar todas las entradas por profesional
+    // buscar todas las entradas por profesional
     List<SpecialityDetail> findByProfessional(Professional professional);
 
-    // Buscar todas las entradas por centro de salud
+    // buscar todas las entradas por centro de salud
     List<SpecialityDetail> findByHealthCenter(HealthCenter healthCenter);
 
-    // Buscar entradas por centro Y especialidad (ej. "Traumatólogos del Hospital San Bernardo")
+    // buscar entradas por centro Y especialidad (ej. "taumatologos del Hospital San Bernardo")
     List<SpecialityDetail> findByHealthCenterAndSpeciality(HealthCenter healthCenter, Speciality speciality);
 }

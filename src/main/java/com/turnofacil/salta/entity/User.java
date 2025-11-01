@@ -2,7 +2,6 @@ package com.turnofacil.salta.entity;
 
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +20,7 @@ import java.util.*;
 @AllArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "user")
+@Table(name = "user_app")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,10 +55,10 @@ public class User {
     @Column(name = "date_of_birth", nullable = false)
     private LocalDate dateOfBirth;
 
-    @ManyToMany //muchos a muchos. Un usuario podria tener varios roles
+    @ManyToMany(fetch = FetchType.LAZY) //muchos a muchos. Un usuario podria tener varios roles
     @JoinTable(
             name = "user_role",   //nombre de la tabla intermedia que rompe la relacion muchos a muchos
-            joinColumns = @JoinColumn(name = "id"),             //clave foranea local
+            joinColumns = @JoinColumn(name = "user_id"),         //clave foranea local
             inverseJoinColumns = @JoinColumn(name = "role_id")  //clave foranea de la otra entidad
     )
     private Set<Role> roles = new HashSet<>();
@@ -67,10 +66,10 @@ public class User {
     //relacion de uno a muchos con appointment (turnos)
     // mapeado a travez del atributo de la clase appointment llamado user
     // en cascada (si un usuario se elimina se elimina su turno)
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Appointment> appointments;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "professional_id", nullable = true)
     private Professional professional;
 

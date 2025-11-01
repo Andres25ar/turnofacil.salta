@@ -32,7 +32,7 @@ public class RegisterRequestDTO {
 
     @Email(message = "Debe ingresar un email valido")
     @NotBlank(message = "Email obligatorio")
-    private String email;
+    private String email;   //con @Setter crea un metodo getEmail
 
     @NotBlank(message = "Contaseña obligatoria")
     @Size(min = 8, max = 16, message = "Ingrese una contraseña que contenga entre 8 y 16 digitos")
@@ -47,4 +47,6 @@ public class RegisterRequestDTO {
     private LocalDate dateOfBirth;
 
     private Set<String> roles;
+
+    private String licence;
 }

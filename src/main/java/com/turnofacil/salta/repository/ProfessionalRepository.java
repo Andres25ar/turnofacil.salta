@@ -9,7 +9,7 @@ import java.util.Optional;
 @Repository
 public interface ProfessionalRepository extends JpaRepository<Professional, Long> {
 
-    // Para buscar un profesional por su matrícula (licence)
+    //buscar un profesional por su matrícula (licence)
     Optional<Professional> findByLicence(String licence);
 }
 
