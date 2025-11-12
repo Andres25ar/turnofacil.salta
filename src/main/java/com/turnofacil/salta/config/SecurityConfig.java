@@ -68,7 +68,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         // Permitimos el acceso público a nuestras rutas de auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
-                        // ¡TAMBIÉN AÑADIMOS ESTO PARA SEGUIR PROBANDO EL CRUD!
+                        /* --- PERMISOS PARA CRUDS --- */
+                        //permitimos para crear centros de salud
                         .requestMatchers("/api/v1/health-centers/**").permitAll()
                         //permisos para crear una especialidad
                         .requestMatchers("/api/v1/specialities/**").permitAll()
@@ -76,6 +77,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/schedules/**").permitAll()
                         //permisos para CRUD de una detalle de especialidad
                         .requestMatchers("/api/v1/speciality-details/**").permitAll()
+                        //permitimos crear turnos
+                        .requestMatchers("api/v1/appointments/**").permitAll()
                         // Cualquier otra ruta (que no tengamos aún) requerirá autenticación
                         .anyRequest().authenticated()
                 );

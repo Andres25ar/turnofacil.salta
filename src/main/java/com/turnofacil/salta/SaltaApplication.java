@@ -9,5 +9,4 @@ public class SaltaApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SaltaApplication.class, args);
 	}
-
 }
