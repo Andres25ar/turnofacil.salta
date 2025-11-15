@@ -66,19 +66,25 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // Configuración de las rutas
                 .authorizeHttpRequests(authz -> authz
+                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                         // Permitimos el acceso público a nuestras rutas de auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
+                        // ruta para buscar especialista por specialidad y centro de salud
+                        .requestMatchers("/api/v1/public/**").permitAll()
                         /* --- PERMISOS PARA CRUDS --- */
-                        //permitimos para crear centros de salud
-                        .requestMatchers("/api/v1/health-centers/**").permitAll()
-                        //permisos para crear una especialidad
-                        .requestMatchers("/api/v1/specialities/**").permitAll()
-                        //permisos para CRUD de una disponibilidad horaria
-                        .requestMatchers("/api/v1/schedules/**").permitAll()
+                        //permitimos para CRUD de centros de salud
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/health-centers/**").permitAll()
+                        .requestMatchers("/api/v1/health-centers/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/type-of-center/**").permitAll()
+                        //permisos para CRUD de especialidad
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/specialities/**").permitAll()
+                        .requestMatchers("/api/v1/specialities/**").hasRole("ADMIN")
+                        //permisos para CRUD de disponibilidad horaria
+                        .requestMatchers("/api/v1/schedules/**").hasAnyRole("ADMIN", "PROFESSIONAL")    //.permitAll()
                         //permisos para CRUD de una detalle de especialidad
-                        .requestMatchers("/api/v1/speciality-details/**").permitAll()
+                        .requestMatchers("/api/v1/speciality-details/**").hasRole("ADMIN")   //.permitAll()
                         //permitimos crear turnos
-                        .requestMatchers("api/v1/appointments/**").permitAll()
+                        .requestMatchers("api/v1/appointments/**").authenticated()  //.permitAll()
                         // Cualquier otra ruta (que no tengamos aún) requerirá autenticación
                         .anyRequest().authenticated()
                 );

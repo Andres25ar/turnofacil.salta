@@ -158,7 +158,7 @@ public class AuthServiceImpl implements IAuthService {
                 jwt,
                 userDetails.getUsername(), // Este es el email
                 userDetails.getFirstName(),
-                null, // No tenemos lastName en UserDetailsImpl, podríamos añadirlo
+                userDetails.getLastName(),
                 roles
         );
     }

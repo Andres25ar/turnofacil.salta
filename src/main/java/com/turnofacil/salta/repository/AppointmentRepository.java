@@ -34,5 +34,14 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             "JOIN FETCH p.user " +
             "WHERE a.user = :patient")
     List<Appointment> findByUserWithDetails(@Param("patient") User patient);
+
+    @Query("SELECT a.startTime FROM Appointment a " +
+            "WHERE a.specialityDetail.id =: specialityDetailId " +
+            "AND a.appointmentDate =: date " +
+            "AND a.status = true")
+    List<LocalTime> findBookedSlotByDetailAndDate(
+            @Param("specialityDetailId") Long specialityDetailId,
+            @Param("date") LocalDate date
+    );
 }
 
