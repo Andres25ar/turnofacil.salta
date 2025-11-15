@@ -26,6 +26,9 @@ public class SpecialityDetail {
     @Column(name = "speciality_detail_id")
     private Long specialityDetailId;
 
+    @Column(nullable = false)
+    private Boolean status = true;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "center_id")
     private HealthCenter healthCenter;

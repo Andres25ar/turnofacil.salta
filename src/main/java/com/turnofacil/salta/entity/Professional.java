@@ -30,6 +30,10 @@ public class Professional {
     @Column(name = "licence", unique = true, nullable = false)
     private String licence;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ProfessionalStatus status;
+
     //relacio uno a uno con usuario que puede no existir, ya que no todo usuario es un profesional
     @OneToOne(mappedBy = "professional", optional = true, fetch = FetchType.LAZY)
     private User user;
@@ -56,4 +60,10 @@ public class Professional {
     private User updatedBy;
 
     //otros metodos
+    @PrePersist
+    public void prePersist() {
+        if (status == null) {
+            status = ProfessionalStatus.ACTIVO;
+        }
+    }
 }

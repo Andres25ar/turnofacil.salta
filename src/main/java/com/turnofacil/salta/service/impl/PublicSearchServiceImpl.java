@@ -54,6 +54,7 @@ public class PublicSearchServiceImpl implements IPublicSearchService {
         List<SpecialityDetail> details = specialityDetailRepository.findByHealthCenterAndSpeciality(center, speciality);
 
         return details.stream()
+                .filter(SpecialityDetail::getStatus)
                 .map(ProfessionalMapper :: professionalResponseDTO)
                 .distinct()
                 .collect(Collectors.toList());

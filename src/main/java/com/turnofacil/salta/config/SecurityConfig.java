@@ -83,6 +83,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/schedules/**").hasAnyRole("ADMIN", "PROFESSIONAL")    //.permitAll()
                         //permisos para CRUD de una detalle de especialidad
                         .requestMatchers("/api/v1/speciality-details/**").hasRole("ADMIN")   //.permitAll()
+                        //permite actulizar, suspender o eliminar usuarios
+                        .requestMatchers("/api/v1/users/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/professionals/**").hasRole("ADMIN")
                         //permitimos crear turnos
                         .requestMatchers("api/v1/appointments/**").authenticated()  //.permitAll()
                         // Cualquier otra ruta (que no tengamos aún) requerirá autenticación
