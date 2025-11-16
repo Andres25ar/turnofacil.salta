@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -13,6 +15,6 @@ public class ProfessionalResponseDTO {
     private Long professionalId;
     private String fullName;
     private String licence;
-
     private Long specialityDetailId;
+    private List<String> availableDays;
 }

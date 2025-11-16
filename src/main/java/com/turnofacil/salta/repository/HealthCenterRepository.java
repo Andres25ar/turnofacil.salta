@@ -3,6 +3,7 @@ package com.turnofacil.salta.repository;
 import com.turnofacil.salta.entity.HealthCenter;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,4 +23,10 @@ public interface HealthCenterRepository extends JpaRepository<HealthCenter, Long
      */
     @Query("SELECT hc FROM HealthCenter hc JOIN FETCH hc.typeOfCenter")
     List<HealthCenter> findAllWithDetails();
+
+    @Query("SELECT DISTINCT hc FROM HealthCenter hc " +
+            "JOIN FETCH hc.typeOfCenter " + // Para que el Mapper funcione sin N+1
+            "JOIN hc.specialityDetails sd " +
+            "WHERE sd.speciality.id = :specialityId AND sd.status = true")
+    List<HealthCenter> findDistinctBySpecialityId(@Param("specialityId") Integer specialityId);
 }

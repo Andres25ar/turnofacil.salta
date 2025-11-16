@@ -1,5 +1,7 @@
 package com.turnofacil.salta.controller;
 
+import com.turnofacil.salta.dto.admin.HealthCenterResponseDTO;
+import com.turnofacil.salta.dto.admin.SpecialityResponseDTO;
 import com.turnofacil.salta.dto.toPublic.ProfessionalResponseDTO;
 import com.turnofacil.salta.service.IPublicSearchService;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -42,4 +44,20 @@ public class PublicSearchController {
         return ResponseEntity.ok(slots);
     }
 
+    //endpoint para buscar centros de salud por especialidad
+    @GetMapping("/centers-by-speciality")
+    public  ResponseEntity<List<HealthCenterResponseDTO>> findCenterBySpecialityId(
+            @RequestParam Integer specialityId
+    ){
+        List<HealthCenterResponseDTO> healthCenterResponse = publicSearchService.findCentersBySpeciality(specialityId);
+        return ResponseEntity.ok(healthCenterResponse);
+    }
+
+    @GetMapping("/specialities-by-center")
+    public ResponseEntity<List<SpecialityResponseDTO>> getSpecialitiesByCenter(
+            @RequestParam Long centerId
+    ) {
+        List<SpecialityResponseDTO> specialities = publicSearchService.findSpecialitiesByCenter(centerId);
+        return ResponseEntity.ok(specialities);
+    }
 }

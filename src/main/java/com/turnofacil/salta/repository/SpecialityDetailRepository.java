@@ -6,6 +6,7 @@ import com.turnofacil.salta.entity.Speciality;
 import com.turnofacil.salta.entity.SpecialityDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -25,6 +26,18 @@ public interface SpecialityDetailRepository extends JpaRepository<SpecialityDeta
     // buscar entradas por centro Y especialidad (ej. "taumatologos del Hospital San Bernardo")
     List<SpecialityDetail> findByHealthCenterAndSpeciality(HealthCenter healthCenter, Speciality speciality);
 
+    //busca entradas por cenro y especialidad, pero comprueba que este aciva
+    @Query("SELECT sd FROM SpecialityDetail sd " +
+            "JOIN FETCH sd.professional p " +
+            "JOIN FETCH p.user " +
+            "JOIN FETCH sd.schedule " +
+            "WHERE sd.healthCenter = :healthCenter " +
+            "AND sd.speciality = speciality " +
+            "AND sd.status = true")
+    List<SpecialityDetail> findActiveDetailsByCenterAndSpecialit (
+            @Param("healthCenter") HealthCenter healthCenter,
+            @Param("speciality") Speciality speciality);
+
     @Query("SELECT sd FROM SpecialityDetail sd " +
             "JOIN FETCH sd.healthCenter " +
             "JOIN FETCH sd.speciality " +
@@ -36,5 +49,6 @@ public interface SpecialityDetailRepository extends JpaRepository<SpecialityDeta
     Optional<SpecialityDetail> findByHealthCenterAndSpecialityAndProfessional(
             HealthCenter healthCenter, Speciality speciality, Professional professional
     );
+
 
 }

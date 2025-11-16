@@ -1,12 +1,16 @@
 package com.turnofacil.salta.service.impl;
 
+import com.turnofacil.salta.dto.admin.HealthCenterResponseDTO;
+import com.turnofacil.salta.dto.admin.SpecialityResponseDTO;
 import com.turnofacil.salta.dto.toPublic.ProfessionalResponseDTO;
 import com.turnofacil.salta.entity.HealthCenter;
 import com.turnofacil.salta.entity.Schedule;
 import com.turnofacil.salta.entity.Speciality;
 import com.turnofacil.salta.entity.SpecialityDetail;
 import com.turnofacil.salta.exception.ResourceNotFoundException;
+import com.turnofacil.salta.mapper.HealthCenterMapper;
 import com.turnofacil.salta.mapper.ProfessionalMapper;
+import com.turnofacil.salta.mapper.SpecialityMapper;
 import com.turnofacil.salta.repository.AppointmentRepository;
 import com.turnofacil.salta.repository.HealthCenterRepository;
 import com.turnofacil.salta.repository.SpecialityDetailRepository;
@@ -51,11 +55,10 @@ public class PublicSearchServiceImpl implements IPublicSearchService {
         Speciality speciality = specialityRepository.findById(specialityId)
                 .orElseThrow(() -> new ResourceNotFoundException("Speciality", "id", specialityId));
 
-        List<SpecialityDetail> details = specialityDetailRepository.findByHealthCenterAndSpeciality(center, speciality);
+        List<SpecialityDetail> details = specialityDetailRepository.findActiveDetailsByCenterAndSpecialit(center, speciality);
 
         return details.stream()
-                .filter(SpecialityDetail::getStatus)
-                .map(ProfessionalMapper :: professionalResponseDTO)
+                .map(ProfessionalMapper :: toProfessionalResponseDTO)
                 .distinct()
                 .collect(Collectors.toList());
     }
@@ -93,7 +96,7 @@ public class PublicSearchServiceImpl implements IPublicSearchService {
 
         //obtener los horarios reservados
         Set<LocalTime> bookedSlots = Set.copyOf(
-                appointmentRepository.findBookedSlotByDetailAndDate(specialityDetailId, date)
+                appointmentRepository.findBookedSlotsByDetailAndDate(specialityDetailId, date)
         );
 
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
@@ -103,6 +106,27 @@ public class PublicSearchServiceImpl implements IPublicSearchService {
                 .map(slot -> slot.format(timeFormatter))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<HealthCenterResponseDTO> findCentersBySpeciality(Integer specialityId) {
+        List<HealthCenter> centers = healthCenterRepository.findDistinctBySpecialityId(specialityId);
+
+        return centers.stream()
+                .map(HealthCenterMapper::toHealthCenterResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<SpecialityResponseDTO> findSpecialitiesByCenter(Long centerId) {
+        List<Speciality> specialities = specialityRepository.findDistinctByHealthCenterId(centerId);
+
+        return specialities.stream()
+                .map(SpecialityMapper::toSpecialityResponseDTO)
+                .collect(Collectors.toList());
+    }
+
 
     private List<LocalTime> generateSlots(LocalTime start, LocalTime finish, int numberOfAppointments){
         List<LocalTime> slots = new ArrayList<>();

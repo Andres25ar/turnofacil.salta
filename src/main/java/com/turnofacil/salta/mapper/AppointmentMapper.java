@@ -11,25 +11,58 @@ public class AppointmentMapper {
             return null;
         }
 
+        // --- 1. Datos del Paciente (Defensivo) ---
         User patient = appointment.getUser();
-        SpecialityDetail detail = appointment.getSpecialityDetail();
-        //User professional = appointment.getUser();
-        User professional = detail.getProfessional().getUser();
-        String patientFullName = patient.getLastName() + ", " + patient.getFirstName();
-        String professionalFullName = professional.getLastName() + ", " + professional.getFirstName();
+        String patientFullName = (patient != null) ? patient.getLastName() + ", " + patient.getFirstName() : "Paciente no asignado";
+        String patientCuil = (patient != null) ? patient.getCuil() : "N/A";
 
+        // --- 2. Datos del Detalle (Defensivo) ---
+        SpecialityDetail detail = appointment.getSpecialityDetail();
+
+        // Valores por defecto que usaremos si algo es nulo
+        String professionalFullName = "Profesional no asignado";
+        String professionalLicence = "N/A";
+        String specialityName = "Especialidad no disponible";
+        String healthCenterName = "Centro no disponible";
+        String healthCenterAddress = "N/A";
+
+        // --- 3. Validación de Nulos ---
+        // Solo si el 'detail' (el enlace) existe, intentamos leer sus datos
+        if (detail != null) {
+
+            // Validar Profesional
+            if (detail.getProfessional() != null && detail.getProfessional().getUser() != null) {
+                User professionalUser = detail.getProfessional().getUser();
+                professionalFullName = professionalUser.getLastName() + ", " + professionalUser.getFirstName();
+                professionalLicence = detail.getProfessional().getLicence();
+            }
+
+            // Validar Especialidad
+            if (detail.getSpeciality() != null) {
+                specialityName = detail.getSpeciality().getName();
+            }
+
+            // Validar Centro de Salud
+            if (detail.getHealthCenter() != null) {
+                healthCenterName = detail.getHealthCenter().getCenterName();
+                healthCenterAddress = detail.getHealthCenter().getCenterAddress();
+            }
+        }
+
+        // --- 4. Retorno Seguro ---
+        // Ahora devolvemos el DTO con los datos seguros (o los valores por defecto)
         return new AppointmentResponseDTO(
                 appointment.getAppointmentId(),
                 appointment.getAppointmentDate(),
                 appointment.getStartTime(),
                 appointment.getStatus(),
                 patientFullName,
-                patient.getCuil(),
+                patientCuil,
                 professionalFullName,
-                detail.getProfessional().getLicence(),
-                detail.getSpeciality().getName(),
-                detail.getHealthCenter().getCenterName(),
-                detail.getHealthCenter().getCenterAddress()
+                professionalLicence,
+                specialityName,
+                healthCenterName,
+                healthCenterAddress
         );
     }
 }

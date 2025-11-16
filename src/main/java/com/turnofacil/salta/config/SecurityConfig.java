@@ -87,16 +87,17 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/users/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/professionals/**").hasRole("ADMIN")
                         //permitimos crear turnos
-                        .requestMatchers("api/v1/appointments/**").authenticated()  //.permitAll()
+                        .requestMatchers("/api/v1/appointments/**").authenticated() //.permitAll()
+                        //permisos para ver y actualizar informacion del perfil
+                        .requestMatchers("/api/v1/profile/**").authenticated()
                         // Cualquier otra ruta (que no tengamos aún) requerirá autenticación
                         .anyRequest().authenticated()
                 );
 
-        // Le decimos a Spring que use nuestro 'authenticationProvider'
+        // para usar 'authenticationProvider' definido por mi
         http.authenticationProvider(authenticationProvider());
 
-        // Le decimos a Spring que añada nuestro "guardia" (AuthTokenFilter)
-        // ANTES del filtro normal de username/password.
+        //para agregar a AuthTokenFilter
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

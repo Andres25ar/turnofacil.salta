@@ -25,7 +25,7 @@ public class TypeOfCenterImpl implements ITypeOfCenterService {
         List<TypeOfCenter> types = typeOfCenterRepository.findAll();
 
         return types.stream()
-                .map(TypeOfCenterMapper::toResponeDTO)
+                .map(TypeOfCenterMapper::toResponseDTO)
                 .collect(Collectors.toList());
     }
 }

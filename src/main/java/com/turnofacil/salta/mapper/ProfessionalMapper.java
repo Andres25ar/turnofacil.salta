@@ -4,7 +4,7 @@ import com.turnofacil.salta.dto.toPublic.ProfessionalResponseDTO;
 import com.turnofacil.salta.entity.SpecialityDetail;
 
 public class ProfessionalMapper {
-    public static ProfessionalResponseDTO professionalResponseDTO(SpecialityDetail detail) {
+    public static ProfessionalResponseDTO toProfessionalResponseDTO(SpecialityDetail detail) {
         if (detail == null || detail.getProfessional() == null){
             return null;
         }
@@ -15,7 +15,8 @@ public class ProfessionalMapper {
                 detail.getProfessional().getProfesionalId(),
                 fullName,
                 detail.getProfessional().getLicence(),
-                detail.getSpecialityDetailId()
+                detail.getSpecialityDetailId(),
+                detail.getSchedule().getDays()
         );
     }
 }

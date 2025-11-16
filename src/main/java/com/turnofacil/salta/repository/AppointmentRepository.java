@@ -8,9 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigInteger;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -32,14 +30,18 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             "JOIN FETCH sd.speciality " +
             "JOIN FETCH sd.professional p " +
             "JOIN FETCH p.user " +
-            "WHERE a.user = :patient")
+            "WHERE a.user = :patient " +
+            "ORDER BY " +
+            "CASE WHEN a.appointmentDate < CURRENT_DATE THEN 2 ELSE 1 END ASC, " +
+            "a.appointmentDate ASC, " +
+            "a.startTime ASC")
     List<Appointment> findByUserWithDetails(@Param("patient") User patient);
 
     @Query("SELECT a.startTime FROM Appointment a " +
-            "WHERE a.specialityDetail.id =: specialityDetailId " +
-            "AND a.appointmentDate =: date " +
+            "WHERE a.specialityDetail.id = :specialityDetailId " +
+            "AND a.appointmentDate = :date " +
             "AND a.status = true")
-    List<LocalTime> findBookedSlotByDetailAndDate(
+    List<LocalTime> findBookedSlotsByDetailAndDate(
             @Param("specialityDetailId") Long specialityDetailId,
             @Param("date") LocalDate date
     );
