@@ -32,9 +32,9 @@ public interface SpecialityDetailRepository extends JpaRepository<SpecialityDeta
             "JOIN FETCH p.user " +
             "JOIN FETCH sd.schedule " +
             "WHERE sd.healthCenter = :healthCenter " +
-            "AND sd.speciality = speciality " +
+            "AND sd.speciality = :speciality " +
             "AND sd.status = true")
-    List<SpecialityDetail> findActiveDetailsByCenterAndSpecialit (
+    List<SpecialityDetail> findActiveDetailsByCenterAndSpeciality (
             @Param("healthCenter") HealthCenter healthCenter,
             @Param("speciality") Speciality speciality);
 

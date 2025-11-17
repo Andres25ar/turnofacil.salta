@@ -55,7 +55,7 @@ public class AppointmentMapper {
                 appointment.getAppointmentId(),
                 appointment.getAppointmentDate(),
                 appointment.getStartTime(),
-                appointment.getStatus(),
+                appointment.getStatus().toString(),
                 patientFullName,
                 patientCuil,
                 professionalFullName,

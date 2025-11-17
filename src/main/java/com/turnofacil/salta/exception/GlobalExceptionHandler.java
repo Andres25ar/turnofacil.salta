@@ -3,6 +3,7 @@ package com.turnofacil.salta.exception;
 import com.turnofacil.salta.dto.MessageResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -37,8 +38,8 @@ public class GlobalExceptionHandler {
     //este es el manejador para la anotacion @Valid... Se activa cuando una validacion del DTO falla.
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, WebRequest request){
-        // Creamos un mapa clave -> valor; para guardar los errores: {campo} -> {mensaje}
-        //Instancia el objeto mapa
+        //crea un mapa clave -> valor; para guardar los errores: {campo} -> {mensaje}
+        //instancia el objeto mapa
         Map<String, String> errors = new HashMap<>();
         //Por cadad error va capturando el nombre y el mensaje recibido
         ex.getBindingResult().getAllErrors().forEach((error) -> {
@@ -46,20 +47,9 @@ public class GlobalExceptionHandler {
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        // Devolvemos un JSON con todos los campos que fallaron y el codigo 400
+        //devovera un JSON con todos los campos que fallaron y el codigo 400
         //retorna 400 BAD REQUEST de http
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
-    }
-
-    // Un manejador generico para cualquier otro error no capturado
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<MessageResponse> handleGlobalException(Exception ex, WebRequest request){
-        // Es importante loguear el error real en la consola del servidor
-        ex.printStackTrace();
-        //almacena el mensaje del error
-        MessageResponse message = new MessageResponse("Ocurrió un error interno: " + ex.getMessage());
-        //retorna 500 INTERNAL SERVER ERROR de http
-        return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -71,5 +61,27 @@ public class GlobalExceptionHandler {
         // Devolvemos un mensaje amigable y el estado 401
         MessageResponse message = new MessageResponse("Credenciales inválidas. Por favor, verifique su email y contraseña.");
         return new ResponseEntity<>(message, HttpStatus.UNAUTHORIZED);
+    }
+
+    /**
+     * Manejador para AccessDeniedException (Error 403).
+     * Se activa cuando un usuario autenticado no tiene el ROL correcto.
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<MessageResponse> handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
+        MessageResponse message = new MessageResponse("Acceso denegado. No tiene los permisos necesarios para esta acción.");
+        return new ResponseEntity<>(message, HttpStatus.FORBIDDEN); // 403
+    }
+
+
+    //manejador generico para cualquier otro error no capturado
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<MessageResponse> handleGlobalException(Exception ex, WebRequest request){
+        // Es importante loguear el error real en la consola del servidor
+        ex.printStackTrace();
+        //almacena el mensaje del error
+        MessageResponse message = new MessageResponse("Ocurrió un error interno: " + ex.getMessage());
+        //retorna 500 INTERNAL SERVER ERROR de http
+        return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

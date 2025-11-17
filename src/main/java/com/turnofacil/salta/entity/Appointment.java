@@ -34,8 +34,9 @@ public class Appointment {
     @Column(name = "start_time")
     private LocalTime startTime;
 
-    @Column(name = "status")
-    private Boolean status;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AppointmentStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -64,5 +65,10 @@ public class Appointment {
     private User updatedBy;
 
     //otros metodo
-
+    @PrePersist
+    public void prePersist() {
+        if (status == null){
+            status = AppointmentStatus.RESERVADO;
+        }
+    }
 }

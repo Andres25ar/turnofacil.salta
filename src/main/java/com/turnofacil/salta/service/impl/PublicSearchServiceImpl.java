@@ -55,7 +55,7 @@ public class PublicSearchServiceImpl implements IPublicSearchService {
         Speciality speciality = specialityRepository.findById(specialityId)
                 .orElseThrow(() -> new ResourceNotFoundException("Speciality", "id", specialityId));
 
-        List<SpecialityDetail> details = specialityDetailRepository.findActiveDetailsByCenterAndSpecialit(center, speciality);
+        List<SpecialityDetail> details = specialityDetailRepository.findActiveDetailsByCenterAndSpeciality(center, speciality);
 
         return details.stream()
                 .map(ProfessionalMapper :: toProfessionalResponseDTO)

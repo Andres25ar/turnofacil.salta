@@ -4,6 +4,7 @@ import com.turnofacil.salta.dto.MessageResponse;
 import com.turnofacil.salta.dto.appointment.AppointmentRequestDTO;
 import com.turnofacil.salta.dto.appointment.AppointmentResponseDTO;
 import com.turnofacil.salta.entity.Appointment;
+import com.turnofacil.salta.entity.AppointmentStatus;
 import com.turnofacil.salta.entity.SpecialityDetail;
 import com.turnofacil.salta.entity.User;
 import com.turnofacil.salta.exception.ResourceNotFoundException;
@@ -12,11 +13,9 @@ import com.turnofacil.salta.repository.AppointmentRepository;
 import com.turnofacil.salta.repository.SpecialityDetailRepository;
 import com.turnofacil.salta.repository.UserRepository;
 import com.turnofacil.salta.service.IAppointmentService;
-import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,8 +46,8 @@ public class AppointmentServiceImpl implements IAppointmentService {
 
         String dayOfWeek = requestDTO.getAppointmentDate().getDayOfWeek().toString();
 
-        boolean isOccupied = appointmentRepository.existsBySpecialityDetailAndAppointmentDateAndStartTime(
-                detail, requestDTO.getAppointmentDate(), requestDTO.getStartTime()
+        boolean isOccupied = appointmentRepository.existsBySpecialityDetailAndAppointmentDateAndStartTimeAndStatus(
+                detail, requestDTO.getAppointmentDate(), requestDTO.getStartTime(), AppointmentStatus.RESERVADO
         );
 
         if(isOccupied){
@@ -60,7 +59,7 @@ public class AppointmentServiceImpl implements IAppointmentService {
         appointment.setSpecialityDetail(detail);
         appointment.setAppointmentDate(requestDTO.getAppointmentDate());
         appointment.setStartTime(requestDTO.getStartTime());
-        appointment.setStatus(true);
+        //appointment.setStatus(true);
 
         Appointment savedAppointment = appointmentRepository.save(appointment);
 
@@ -93,7 +92,7 @@ public class AppointmentServiceImpl implements IAppointmentService {
                 .collect(Collectors.toList());
     }
 
-    @SneakyThrows //si no funciona descomentar y probar
+    //@SneakyThrows //si no funciona descomentar y probar
     @Override
     @Transactional
     public MessageResponse cancelAppointment(Long appointmentId, String userEmail) {
@@ -101,10 +100,11 @@ public class AppointmentServiceImpl implements IAppointmentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment", "id", appointmentId));
 
         if(!appointment.getUser().getEmail().equals(userEmail)){
-            throw new AccessDeniedException("No tiene permisos para cancelar este turno.");
+            throw new org.springframework.security.access.AccessDeniedException("No tiene permisos para cancelar este turno.");
+            //throw new AccessDeniedException("No tiene permisos para cancelar este turno.");
         }
 
-        appointment.setStatus(false);
+        appointment.setStatus(AppointmentStatus.CANCELADO_PACIENTE);
         appointmentRepository.save(appointment);
 
         return new MessageResponse("Se ha cancelado el turno correctamente.");

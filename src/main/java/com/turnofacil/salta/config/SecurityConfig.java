@@ -6,6 +6,7 @@ import com.turnofacil.salta.service.impl.UserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -19,8 +20,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableWebSecurity // Activa la configuración de seguridad web de Spring
-@EnableMethodSecurity
+@EnableWebSecurity
+@EnableMethodSecurity // Habilita la seguridad a nivel de método (ej. @PreAuthorize)
 public class SecurityConfig {
     @Autowired
     private UserDetailsService userDetailsService;
@@ -60,44 +61,42 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                // Le decimos que use nuestro manejador de errores 401
+                // Manejador de errores 401 (No Autorizado)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
-                // Le decimos que NO cree sesiones. Será 100% stateless (basado en tokens).
+                // Política de sesión SIN ESTADO (Stateless) para que funcione con JWT
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // Configuración de las rutas
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
-                        // Permitimos el acceso público a nuestras rutas de auth
+                        // 1. Peticiones de Pre-vuelo (CORS)
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        // 2. Rutas Públicas (Login, Registro y Búsquedas)
                         .requestMatchers("/api/v1/auth/**").permitAll()
-                        // ruta para buscar especialista por specialidad y centro de salud
                         .requestMatchers("/api/v1/public/**").permitAll()
-                        /* --- PERMISOS PARA CRUDS --- */
-                        //permitimos para CRUD de centros de salud
-                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/health-centers/**").permitAll()
-                        .requestMatchers("/api/v1/health-centers/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/type-of-center/**").permitAll()
-                        //permisos para CRUD de especialidad
-                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/specialities/**").permitAll()
+                        // 3. Rutas de Admin (CRUDs simples)
+                        // Permitimos GET públicos, pero POST/PUT/DELETE solo para ADMIN
+                        .requestMatchers(HttpMethod.GET, "/api/v1/health-centers/**").permitAll()
+                        .requestMatchers("/api/v1/health-centers/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/specialities/**").permitAll()
                         .requestMatchers("/api/v1/specialities/**").hasRole("ADMIN")
-                        //permisos para CRUD de disponibilidad horaria
-                        .requestMatchers("/api/v1/schedules/**").hasAnyRole("ADMIN", "PROFESSIONAL")    //.permitAll()
-                        //permisos para CRUD de una detalle de especialidad
-                        .requestMatchers("/api/v1/speciality-details/**").hasRole("ADMIN")   //.permitAll()
-                        //permite actulizar, suspender o eliminar usuarios
-                        .requestMatchers("/api/v1/users/**").hasRole("ADMIN")
-                        .requestMatchers("/api/v1/professionals/**").hasRole("ADMIN")
-                        //permitimos crear turnos
-                        .requestMatchers("/api/v1/appointments/**").authenticated() //.permitAll()
-                        //permisos para ver y actualizar informacion del perfil
+                        .requestMatchers("/api/v1/schedules/**").hasAnyRole("ADMIN", "PROFESIONAL")
+                        .requestMatchers("/api/v1/speciality-details/**").hasRole("ADMIN")
+                        // 4. Rutas Protegidas por @PreAuthorize (en los controladores)
+                        // Solo requerimos que estén autenticados.
+                        // @PreAuthorize se encargará de verificar el ROL (ADMIN o PROFESSIONAL)
+                        .requestMatchers("/api/v1/users/**").authenticated()
+                        .requestMatchers("/api/v1/professionals/**").authenticated()
+                        // 5. Rutas de Paciente y Perfil
+                        .requestMatchers("/api/v1/appointments/**").authenticated()
                         .requestMatchers("/api/v1/profile/**").authenticated()
-                        // Cualquier otra ruta (que no tengamos aún) requerirá autenticación
+                        // 6. Todas las demás rutas
                         .anyRequest().authenticated()
                 );
 
-        // para usar 'authenticationProvider' definido por mi
+        // Define el proveedor de autenticación
         http.authenticationProvider(authenticationProvider());
 
-        //para agregar a AuthTokenFilter
+        // Añade nuestro filtro de tokens JWT antes del filtro de login estándar
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

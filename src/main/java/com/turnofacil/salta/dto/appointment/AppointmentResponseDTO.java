@@ -18,11 +18,7 @@ public class AppointmentResponseDTO {
     private Long appointmentId;
     private LocalDate appointmentDate;
     private LocalTime startTime;
-    private Boolean status;
-
-    // --- Datos Aplanados ---
-    // En lugar de enviar IDs, enviamos los nombres que el usuario quiere ver.
-    // Llenaremos esto en la capa de Servicio.
+    private String status;
     private String patientName;
     private String patientCuil;
     private String professionalName;
